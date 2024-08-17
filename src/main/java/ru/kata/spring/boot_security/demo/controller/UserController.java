@@ -50,17 +50,22 @@ public class UserController {
     }
 
     @PostMapping("/edit")
+    @PreAuthorize("hasAuthority('users:write')")
     public String editUser(@RequestParam Long id, Model model) {
+        System.out.println(id);
         model.addAttribute("editsUser", userService.getUserById(id));
         return "edit";
     }
 
     @PostMapping("/update")
+    @PreAuthorize("hasAuthority('users:write')")
     public String updateUser(@ModelAttribute("editsUser") @Valid User user, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("editsUser", user);
             return "edit";
         }
+        System.out.println(user.getId());
+        System.out.println(user.getEmail());
         userService.update(user);
         return "redirect:/users";
     }

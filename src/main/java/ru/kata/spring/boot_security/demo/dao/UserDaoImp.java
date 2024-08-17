@@ -8,6 +8,7 @@ import ru.kata.spring.boot_security.demo.model.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
@@ -44,11 +45,25 @@ public class UserDaoImp implements UserDao {
 
     @Override
     public User getUserById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID must not be null");
+        }
         User user = entityManager.find(User.class, id);
         if (user == null) {
             throw new EntityNotFoundException("User with id " + id + " not found");
         }
         return user;
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        try {
+            return entityManager.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
+                    .setParameter("email", email)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            throw new EntityNotFoundException("User with email " + email + " not found");
+        }
     }
 
     @Override
