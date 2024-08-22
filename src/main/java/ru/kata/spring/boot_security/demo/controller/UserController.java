@@ -1,7 +1,6 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,6 +12,7 @@ import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
 @Controller
 public class UserController {
@@ -24,33 +24,35 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    @PreAuthorize("hasAuthority('users:read')")
-    public String getUsers(Model model) {
-        model.addAttribute("users", userService.listUsers());
-        model.addAttribute("user", new User());
+    public String getUsers(Model model, Principal principal) {
+        model.addAttribute("user", userService.getUserByEmail(principal.getName()));
         return "users";
     }
 
+    @GetMapping("/users_for_admin")
+    public String getUsersForAdmin(Model model) {
+        model.addAttribute("users", userService.listUsers());
+        model.addAttribute("user", new User());
+        return "users_for_admin";
+    }
+
     @PostMapping("/add")
-    @PreAuthorize("hasAuthority('users:write')")
     public String addUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("users", userService.listUsers());
-            return "users";
+            return "users_for_admin";
         }
         userService.add(user);
-        return "redirect:/users";
+        return "redirect:/users_for_admin";
     }
 
     @PostMapping("/delete")
-    @PreAuthorize("hasAuthority('users:write')")
     public String deleteUser(@RequestParam Long id) {
         userService.delete(id);
-        return "redirect:/users";
+        return "redirect:/users_for_admin";
     }
 
     @PostMapping("/edit")
-    @PreAuthorize("hasAuthority('users:write')")
     public String editUser(@RequestParam Long id, Model model) {
         System.out.println(id);
         model.addAttribute("editsUser", userService.getUserById(id));
@@ -58,16 +60,15 @@ public class UserController {
     }
 
     @PostMapping("/update")
-    @PreAuthorize("hasAuthority('users:write')")
     public String updateUser(@ModelAttribute("editsUser") @Valid User user, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("editsUser", user);
             return "edit";
         }
         System.out.println(user.getId());
-        System.out.println(user.getEmail());
+        System.out.println(user.getUsername());
         userService.update(user);
-        return "redirect:/users";
+        return "redirect:/users_for_admin";
     }
 
 }

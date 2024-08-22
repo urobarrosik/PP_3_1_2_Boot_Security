@@ -18,14 +18,18 @@
     <input type="text" id="lastName" name="lastName" required th:field="*{lastName}"/>
     <div style="color:red" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">Ошибка фамилии</div>
 
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required th:field="*{email}"/>
-    <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Ошибка мыла</div>
+    <label for="username">Email/Username:</label>
+    <input type="email" id="username" name="username" required th:field="*{username}"/>
+    <div style="color:red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Ошибка мыла</div>
 
     <button type="submit">Сохранить изменения</button>
 </form>
 
 <a href="/users">Назад к списку пользователей</a>
+
+<form th:action="@{/logout}" method="post">
+    <button type="submit" class="btn btn-danger">Выйти</button>
+</form>
 
 </body>
 </html>

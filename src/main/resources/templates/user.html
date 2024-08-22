@@ -7,5 +7,10 @@
 <h1>User, welcome spring boot security page!</h1>
 
 <a href="users">Список пользователей</a>
+
+<form th:action="@{/logout}" method="post">
+    <button type="submit" class="btn btn-danger">Выйти</button>
+</form>
+
 </body>
 </html>

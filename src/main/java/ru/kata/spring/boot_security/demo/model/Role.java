@@ -1,28 +1,42 @@
 package ru.kata.spring.boot_security.demo.model;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-import java.util.Set;
-import java.util.stream.Collectors;
+@Entity
+@Table(name = "roles")
+public class Role {
 
-public enum Role {
-    USER(Set.of(Permission.USERS_READ)),
-    ADMIN(Set.of(Permission.USERS_READ, Permission.USERS_WRITE));
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-    private final Set<Permission> permissions;
+    @Column(name = "role_name")
+    private String name;
 
-    Role(Set<Permission> permissions) {
-        this.permissions = permissions;
+
+    public long getId() {
+        return id;
     }
 
-    public Set<Permission> getPermissions() {
-        return permissions;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    public Set<SimpleGrantedAuthority> getAuthorities() {
-        return getPermissions().stream()
-                .map(permission -> new SimpleGrantedAuthority(permission.getPermission()))
-                .collect(Collectors.toSet());
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Role [id=" + id + ", name=" + name + "]";
     }
 }

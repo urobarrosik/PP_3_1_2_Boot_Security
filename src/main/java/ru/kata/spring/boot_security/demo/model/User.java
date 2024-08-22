@@ -4,16 +4,16 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Collection;
 
 
 @Component
@@ -35,29 +35,31 @@ public class User {
     @Size(min = 1, max = 50, message = "Такие фамилии не поддерживаются")
     private String lastName;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     @Email(message = "Это не Email")
-    private String email;
+    private String username; //EMAIL
 
     @Column(name = "password")
     private String password;
 
-    @Enumerated(value = EnumType.STRING)
+    @ManyToMany
+    @JoinTable(name = "users_role")
     @Column(name = "role")
-    private Role role;
+    private Collection<Role> roles;
 
-    public User() {
-    }
+    public User() {}
 
     public User(String firstName, String lastName, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.email = email;
+        this.username = email;
     }
 
     public Long getId() {
         return id;
     }
+
+    public void setId(Long id) {this.id = id;}
 
     public String getFirstName() {
         return firstName;
@@ -75,21 +77,25 @@ public class User {
         this.lastName = lastName;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String email) {
+        this.username = email;
     }
 
     public String getPassword() {return password;}
 
     public void setPassword(String password) {this.password = password;}
 
-    public Role getRole() {return role;}
+    public Collection<Role> getRoles() {
+        return roles;
+    }
 
-    public void setRole(Role role) {this.role = role;}
+    public void setRoles(Collection<Role> roles) {
+        this.roles = roles;
+    }
 
     @Override
     public String toString() {
@@ -97,7 +103,7 @@ public class User {
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
+                ", email='" + username + '\'' +
                 '}';
     }
 }

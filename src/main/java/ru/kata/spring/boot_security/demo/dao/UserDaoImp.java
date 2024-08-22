@@ -58,7 +58,7 @@ public class UserDaoImp implements UserDao {
     @Override
     public User getUserByEmail(String email) {
         try {
-            return entityManager.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
+            return entityManager.createQuery("SELECT u FROM User u WHERE u.username = :email", User.class)
                     .setParameter("email", email)
                     .getSingleResult();
         } catch (NoResultException e) {
@@ -72,7 +72,7 @@ public class UserDaoImp implements UserDao {
         if (existingUser != null) {
             existingUser.setFirstName(user.getFirstName());
             existingUser.setLastName(user.getLastName());
-            existingUser.setEmail(user.getEmail());
+            existingUser.setUsername(user.getUsername());
             entityManager.merge(existingUser);
         }
     }
