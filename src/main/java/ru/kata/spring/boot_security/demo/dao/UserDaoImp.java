@@ -1,30 +1,27 @@
 package ru.kata.spring.boot_security.demo.dao;
 
-
-
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
 
 @Repository
-@Transactional
 public class UserDaoImp implements UserDao {
 
     @PersistenceContext
     private final EntityManager entityManager;
 
+
     public UserDaoImp(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
+
 
     @Override
     public void add(User user) {
@@ -32,15 +29,17 @@ public class UserDaoImp implements UserDao {
     }
 
     @Override
+    public void addUser(User user) {
+        User newUser = new User(user.getFirstName(), user.getLastName(), user.getUsername(), user.getPassword());
+        newUser.setRoles(user.getRoles());
+        entityManager.persist(newUser);
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public List<User> listUsers() {
         TypedQuery<User> query = entityManager.createQuery("FROM User", User.class);
         return query.getResultList();
-    }
-
-    @Override
-    public void dropUsersTable() {
-        entityManager.createNativeQuery("DROP TABLE IF EXISTS users").executeUpdate();
     }
 
     @Override
@@ -69,12 +68,9 @@ public class UserDaoImp implements UserDao {
     @Override
     public void update(User user) {
         User existingUser = getUserById(user.getId());
-        if (existingUser != null) {
             existingUser.setFirstName(user.getFirstName());
             existingUser.setLastName(user.getLastName());
             existingUser.setUsername(user.getUsername());
-            entityManager.merge(existingUser);
-        }
     }
 
     @Override
@@ -83,27 +79,5 @@ public class UserDaoImp implements UserDao {
         entityManager.remove(user);
     }
 
-    @Override
-    public void addUserIfNotExist(User user) {
-        String result;
-
-        try {
-            User existingUser = entityManager.createQuery("SELECT u FROM User u WHERE u.firstName = :firstName", User.class)
-                    .setParameter("firstName", user.getFirstName())
-                    .getResultStream()
-                    .findFirst()
-                    .orElse(null);
-
-            if (existingUser != null) {
-                result = "Пользователь с таким именем уже существует.";
-            } else {
-                entityManager.persist(user);
-                result = "Пользователь успешно добавлен.";
-            }
-        } catch (PersistenceException e) {
-            result = "Ошибка при добавлении пользователя: " + e.getMessage();
-        }
-        System.out.println(result);
-    }
 }
 

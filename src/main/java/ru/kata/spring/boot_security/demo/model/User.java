@@ -1,9 +1,11 @@
 package ru.kata.spring.boot_security.demo.model;
 
-import org.springframework.stereotype.Component;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,10 +18,10 @@ import javax.validation.constraints.Size;
 import java.util.Collection;
 
 
-@Component
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,10 +44,15 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_role")
     @Column(name = "role")
     private Collection<Role> roles;
+
+    private boolean accountNonExpired;
+    private boolean accountNonLocked;
+    private boolean credentialsNonExpired;
+    private boolean enabled;
 
     public User() {}
 
@@ -54,6 +61,49 @@ public class User {
         this.lastName = lastName;
         this.username = email;
     }
+
+    public User(String firstName, String lastName, String username, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.password = password;
+    }
+
+    public User(String username, String password, Collection<? extends GrantedAuthority> authorities) {
+        this.username = username;
+        this.password = password;
+        this.roles = (Collection<Role>) authorities;
+        accountNonExpired = true;
+        accountNonLocked = true;
+        credentialsNonExpired = true;
+        enabled = true;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles;
+    }
+
 
     public Long getId() {
         return id;
@@ -106,5 +156,6 @@ public class User {
                 ", email='" + username + '\'' +
                 '}';
     }
+
 }
 
