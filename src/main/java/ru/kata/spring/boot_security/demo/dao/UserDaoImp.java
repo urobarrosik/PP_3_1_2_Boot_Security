@@ -68,9 +68,9 @@ public class UserDaoImp implements UserDao {
     @Override
     public void update(User user) {
         User existingUser = getUserById(user.getId());
-            existingUser.setFirstName(user.getFirstName());
-            existingUser.setLastName(user.getLastName());
-            existingUser.setUsername(user.getUsername());
+        existingUser.setFirstName(user.getFirstName());
+        existingUser.setLastName(user.getLastName());
+        existingUser.setUsername(user.getUsername());
     }
 
     @Override

@@ -54,7 +54,8 @@ public class User implements UserDetails {
     private boolean credentialsNonExpired;
     private boolean enabled;
 
-    public User() {}
+    public User() {
+    }
 
     public User(String firstName, String lastName, String email) {
         this.firstName = firstName;
@@ -109,7 +110,9 @@ public class User implements UserDetails {
         return id;
     }
 
-    public void setId(Long id) {this.id = id;}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -135,9 +138,13 @@ public class User implements UserDetails {
         this.username = email;
     }
 
-    public String getPassword() {return password;}
+    public String getPassword() {
+        return password;
+    }
 
-    public void setPassword(String password) {this.password = password;}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public Collection<Role> getRoles() {
         return roles;
