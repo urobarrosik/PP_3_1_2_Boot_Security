@@ -3,10 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
     <title>Список пользователей</title>
 </head>
 <body>
@@ -18,6 +16,7 @@
         <th>Имя пользователя</th>
         <th>Фамилия</th>
         <th>Email/Username</th>
+        <th>Роли</th> <!-- Изменено на "Роли" -->
         <th>Удаление</th>
         <th>Изменение</th>
     </tr>
@@ -27,6 +26,9 @@
         <td th:text="${user.firstName}"></td>
         <td th:text="${user.lastName}"></td>
         <td th:text="${user.username}"></td>
+        <td>
+            <span th:each="role : ${user.roles}" th:text="${role.name}"></span>
+        </td>
         <td>
             <form th:action="@{/delete}" method="post" style="display:inline;">
                 <input type="hidden" name="id" th:value="${user.id}"/>
@@ -43,62 +45,40 @@
     </tbody>
 </table>
 
-<h2>Добавить пользователя</h2>
 <form th:action="@{/add}" method="post" th:object="${user}">
+
     <label for="firstName">Имя:</label>
-    <input type="text" id="firstName" name="firstName" required th:field="*{firstName}"/>
+    <input type="text" id="firstName" th:field="*{firstName}" placeholder="Имя" required/>
     <div style="color:red" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">Ошибка имени</div>
 
     <label for="lastName">Фамилия:</label>
-    <input type="text" id="lastName" name="lastName" required th:field="*{lastName}"/>
+    <input type="text" id="lastName" th:field="*{lastName}" placeholder="Фамилия" required/>
     <div style="color:red" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">Ошибка фамилии</div>
 
-    <label for="username">Email/Username:</label>
-    <input type="email" id="username" name="username" required th:field="*{username}"/>
-    <div style="color:red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Ошибка email/имени
-        пользователя
-    </div>
+    <label for="Email/Username">Email/Username:</label>
+    <input type="email" id="Email/Username" th:field="*{username}" placeholder="Email/Username" required/>
+    <div style="color:red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Ошибка мыла</div>
 
     <label for="password">Пароль:</label>
-    <input type="password" id="password" name="password" required th:field="*{password}"/>
+    <input type="password" id="password" th:field="*{password}" placeholder="Пароль" required/>
     <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Ошибка пароля</div>
 
-<!--    <label for="roles">Роль:</label>-->
-<!--    <input type="text" id="roles" name="roles" required th:field="*{roles}"/>-->
-<!--    <div style="color:red" th:if="${#fields.hasErrors('roles')}" th:errors="*{roles}">Ошибка ролей</div>-->
+    <br/>
+    <label>Выберите роли:</label>
+    <br/>
+    <div th:each="role : ${roles}">
+        <input type="checkbox" checked th:id="'role_' + ${role.id}"
+               th:name="'roles'"
+               th:value="${role.id}"/>
+        <label th:for="'role_' + ${role.id}" th:text="${role.name}"></label><br/>
+    </div>
 
-        <label for="roles">Roles:</label>
-        <select id="roles" name="roles" multiple th:field="*{roles}">
-            <option value="ROLE_USER">User</option>
-            <option value="ROLE_ADMIN">Admin</option>
-        </select>
-    <button type="submit">Добавить</button>
-
-
+    <button type="submit">Добавить пользователя</button>
 </form>
+
 <form th:action="@{/logout}" method="post">
     <button type="submit" class="btn btn-danger">Выйти</button>
 </form>
 
-<!--<form action="/admin/add" method="post">-->
-<!--    <label for="username">Username:</label>-->
-<!--    <input type="text" id="username" name="username" required>-->
-
-<!--    <label for="password">Password:</label>-->
-<!--    <input type="password" id="password" name="password" required>-->
-
-<!--    <label for="roles">Roles:</label>-->
-<!--    <select id="roles" name="roles" multiple>-->
-<!--        <option value="ROLE_USER">User</option>-->
-<!--        <option value="ROLE_ADMIN">Admin</option>-->
-<!--    </select>-->
-
-<!--    <button type="submit">Add User</button>-->
-<!--</form>-->
-
-<!--<form th:action="@{/logout}" method="post">-->
-<!--    <button type="submit" class="btn btn-danger">Выйти</button>-->
-<!--</form>-->
-
-<!--</body>-->
-<!--</html>-->
+</body>
+</html>

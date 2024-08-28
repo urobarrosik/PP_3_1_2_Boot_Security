@@ -27,6 +27,28 @@
     <input type="email" id="username" name="username" required th:field="*{username}"/>
     <div style="color:red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Ошибка мыла</div>
 
+    <label for="password">Новый пароль:</label>
+    <input type="password" id="password" name="password" required th:field="*{password}"/>
+    <button type="button" onclick="togglePassword()">Показать/Скрыть</button>
+    <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Ошибка пароля</div>
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+        }
+    </script>
+
+    <br/>
+    <label>Выберите роли:</label>
+    <br/>
+    <div th:each="role : ${roles}">
+        <input type="checkbox" checked th:id="'role_' + ${role.id}"
+               th:name="'roles'"
+               th:value="${role.id}"/>
+        <label th:for="'role_' + ${role.id}" th:text="${role.name}"></label><br/>
+    </div>
+
     <button type="submit">Сохранить изменения</button>
 </form>
 
