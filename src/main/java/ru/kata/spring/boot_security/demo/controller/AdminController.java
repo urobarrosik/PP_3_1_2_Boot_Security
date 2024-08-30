@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.service.RoleRepository;
+import ru.kata.spring.boot_security.demo.repository.RoleRepository;
+import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import javax.validation.Valid;
@@ -18,11 +19,11 @@ import javax.validation.Valid;
 public class AdminController {
 
     private final UserService userService;
-    private final RoleRepository roleRepository;
+    private final RoleService roleService;
 
-    public AdminController(UserService userService, RoleRepository roleRepository) {
+    public AdminController(UserService userService, RoleRepository roleRepository, RoleService roleService) {
         this.userService = userService;
-        this.roleRepository = roleRepository;
+        this.roleService = roleService;
     }
 
 
@@ -30,7 +31,7 @@ public class AdminController {
     public String getUsersForAdmin(Model model) {
         model.addAttribute("users", userService.listUsers());
         model.addAttribute("user", new User());
-        model.addAttribute("roles", roleRepository.findAll());
+        model.addAttribute("roles", roleService.findAllRoles());
         return "admin";
     }
 
@@ -55,7 +56,7 @@ public class AdminController {
     @PostMapping("/edit")
     public String editUser(@RequestParam Long id, Model model) {
         model.addAttribute("editsUser", userService.getUserById(id));
-        model.addAttribute("roles", roleRepository.findAll());
+        model.addAttribute("roles", roleService.findAllRoles());
         return "edit";
     }
 

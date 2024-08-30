@@ -1,6 +1,5 @@
 package ru.kata.spring.boot_security.demo.dao;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import ru.kata.spring.boot_security.demo.model.User;
@@ -19,8 +18,6 @@ public class UserDaoImp implements UserDao {
     @PersistenceContext
     private final EntityManager entityManager;
 
-    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
-
     public UserDaoImp(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
@@ -34,7 +31,7 @@ public class UserDaoImp implements UserDao {
     @Override
     public void addUser(User user) {
         User newUser = new User(user.getFirstName(), user.getLastName(), user.getUsername(),
-                passwordEncoder.encode(user.getPassword()));
+                user.getPassword());
         newUser.setRoles(user.getRoles());
         entityManager.persist(newUser);
     }
@@ -61,7 +58,8 @@ public class UserDaoImp implements UserDao {
     @Override
     public User getUserByEmail(String email) {
         try {
-            return entityManager.createQuery("SELECT u FROM User u WHERE u.username = :email", User.class)
+            return entityManager.createQuery("SELECT u FROM User u JOIN FETCH u.roles WHERE u.username = :email"
+                            , User.class)
                     .setParameter("email", email)
                     .getSingleResult();
         } catch (NoResultException e) {
@@ -75,7 +73,7 @@ public class UserDaoImp implements UserDao {
         existingUser.setFirstName(user.getFirstName());
         existingUser.setLastName(user.getLastName());
         existingUser.setUsername(user.getUsername());
-        existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        existingUser.setPassword(user.getPassword());
         existingUser.setRoles(user.getRoles());
     }
 
