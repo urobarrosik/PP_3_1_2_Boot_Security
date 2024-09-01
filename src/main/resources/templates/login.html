@@ -8,10 +8,26 @@
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
     <title>Please Sign In</title>
+    <style>
+        .form-container {
+            max-width: 400px;
+            margin: 100px auto;
+        }
+        .form-control {
+            margin-bottom: 0;
+        }
+        .header-title {
+            text-align: left;
+        }
+        .btn {
+            margin-top: 10px;
+        }
+    </style>
 </head>
+
 <body>
-<div class="container">
-    <h2 class="mt-5">Please sign in</h2>
+<div class="container form-container">
+    <h1 class="h3 mb-3 font-weight-bold header-title">Please sign in</h1>
 
     <div th:if="${param.error}">
         Invalid username and password.
@@ -19,13 +35,12 @@
     <div th:if="${param.logout}">
         You have been logged out.
     </div>
-    <form th:action="@{/login}" method="post" class="mt-3">
-        <div class="form-group">
-            <input type="text" class="form-control" id="username" name="username" placeholder="Email address">
+    <form th:action="@{/login}" method="post" class="form-signin">
 
-            <input type="password" class="form-control" id="password" name="password" placeholder="Password">
-        </div>
-        <button type="submit" class="btn btn-primary">Sign in</button>
+        <input type="text" class="form-control" id="username" name="username" placeholder="Email address">
+
+        <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+        <button type="submit" class="btn btn-primary btn-block">Sign in</button>
     </form>
 </div>
 </body>

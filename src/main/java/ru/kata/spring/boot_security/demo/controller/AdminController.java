@@ -14,6 +14,7 @@ import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
 @Controller
 public class AdminController {
@@ -21,28 +22,31 @@ public class AdminController {
     private final UserService userService;
     private final RoleService roleService;
 
-    public AdminController(UserService userService, RoleRepository roleRepository, RoleService roleService) {
+    public AdminController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
     }
 
 
     @GetMapping("/admin")
-    public String getUsersForAdmin(Model model) {
+    public String getUsersForAdmin(Model model, Principal principal) {
+        model.addAttribute("addedUser", new User());
         model.addAttribute("users", userService.listUsers());
-        model.addAttribute("user", new User());
         model.addAttribute("roles", roleService.findAllRoles());
+        model.addAttribute("admin", userService.getUserByEmail(principal.getName()));
         return "admin";
     }
 
     @PostMapping("/add")
-    public String addUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, Model model) {
+    public String addUser(@ModelAttribute("addedUser") @Valid User addedUser, BindingResult bindingResult, Model model
+            , Principal principal) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("users", userService.listUsers());
+            model.addAttribute("roles", roleService.findAllRoles());
+            model.addAttribute("admin", userService.getUserByEmail(principal.getName()));
             return "admin";
         }
-        model.addAttribute("user", user);
-        userService.addUser(user);
+        userService.addUser(addedUser);
         return "redirect:/admin";
     }
 

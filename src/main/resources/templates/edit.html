@@ -23,6 +23,10 @@
     <input type="text" id="lastName" name="lastName" required th:field="*{lastName}"/>
     <div style="color:red" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">Ошибка фамилии</div>
 
+    <label for="age">Возраст:</label>
+    <input type="text" id="age" name="age" required th:field="*{age}"/>
+    <div style="color:red" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">Ошибка возраста</div>
+
     <label for="username">Email/Username:</label>
     <input type="email" id="username" name="username" required th:field="*{username}"/>
     <div style="color:red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Ошибка мыла</div>

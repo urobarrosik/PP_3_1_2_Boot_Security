@@ -1,38 +1,143 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ru">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>Твои данные</title>
+    <style>
+        .navbar {
+            background-color: #343a40;
+        }
+
+        .username {
+            color: white;
+            font-weight: bold;
+        }
+
+        .user-info {
+            color: #b0b3b8;
+        }
+
+        .container-fluid {
+            display: flex;
+            margin: 0;
+            width: 100%;
+        }
+
+        .sidebar {
+            flex: 1;
+            background-color: white;
+            padding: 15px;
+            height: calc(100vh - 6.6vh);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content {
+            flex: 7;
+            background-color: #FFFAFA;
+            padding: 15px;
+        }
+
+        .logout-button {
+            background-color: transparent;
+            color: gray;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .logout-button:hover {
+            color: darkgray;
+        }
+
+        .role-button {
+            flex-basis: 2vh;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+    </style>
 </head>
+
 <body>
-<h1>Твои данные</h1>
+<nav class="navbar navbar-expand-md navbar-dark">
+    <div class="container-fluid ">
+        <span class="username">
+            <span th:text="${user.username}">Имя</span>
+            <span class="user-info">
+                <span> with roles: <span th:text="${user.roles}">Роли</span></span>
+            </span>
+        </span>
 
-<table border="1">
-    <thead>
-    <tr>
-        <th>Имя пользователя</th>
-        <th>Фамилия</th>
-        <th>Email/Username</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:object="${user}">
-        <td th:text="${user.firstName}"></td>
-        <td th:text="${user.lastName}"></td>
-        <td th:text="${user.username}"></td>
-    </tr>
-    </tbody>
-</table>
+        <form id="logoutForm" method="post" th:action="@{/logout}">
+            <button type="submit" class="logout-button">Logout</button>
+        </form>
+    </div>
+</nav>
 
-<form th:action="@{/logout}" method="post">
-    <button type="submit" class="btn btn-danger">Выйти</button>
-</form>
+<div class="container-fluid">
 
-</form>
+    <div class="sidebar">
+        <div class="btn-group-vertical" role="group" aria-label="Basic example">
+            <div th:each="role : ${user.roles}">
+                <button type="button" class="btn btn-primary role-button"
+                        th:text="${role.name}"
+                        th:data-link="${role.link}"
+                        onclick="location.href=this.dataset.link;"></button>
+            </div>
+        </div>
 
+
+    </div>
+
+    <div class="content">
+        <h2>User information-page</h2>
+
+        <div class="card">
+            <div class="card-header">
+                About user
+            </div>
+
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">FirstName</th>
+                        <th scope="col">LastName</th>
+                        <th scope="col">Age</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Role</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td th:text="${user.id}"></td>
+                        <td th:text="${user.firstName}"></td>
+                        <td th:text="${user.lastName}"></td>
+                        <td th:text="${user.age}"></td>
+                        <td th:text="${user.username}"></td>
+                        <td>
+                            <span th:each="role : ${user.roles}" th:text="${role.name}"></span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT+zLzjzK2z6p7r4Q0I4+G3nA4g6k5q5f5o5G6A5eQ0w3D4D5"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-JZyCk2n2jZyCk2n2jZyCk2n2jZyCk2n2jZyCk2n2jZyCk2n2jZyCk2n2jZyCk2n2"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-J6qa4849blE+IoDqgF8BzU5gF5hP5gF5hP5gF5hP5gF5gF5hP5gF5hP5gF5hP5"
+        crossorigin="anonymous"></script>
 </body>
 </html>

@@ -3,6 +3,7 @@ package ru.kata.spring.boot_security.demo.model;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,6 +15,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Collection;
@@ -25,6 +28,11 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "age")
+    @Min(value = 0, message = "Возраст не может быть меньше 0")
+    @Max(value = 126, message = "Возраст больше 126 не рассматривается")
+    private byte age;
 
     @Column(name = "name")
     @NotEmpty(message = "Поле имени не должно быть пустым")
@@ -43,9 +51,12 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "users_role")
-    @Column(name = "role")
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
     private Collection<Role> roles;
 
     private boolean accountNonExpired;
@@ -111,6 +122,16 @@ public class User implements UserDetails {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @Min(value = 0, message = "Возраст не может быть меньше 0")
+    @Max(value = 126, message = "Возраст больше 126 не рассматривается")
+    public byte getAge() {
+        return age;
+    }
+
+    public void setAge(@Min(value = 0, message = "Возраст не может быть меньше 0") @Max(value = 126, message = "Возраст больше 126 не рассматривается") byte age) {
+        this.age = age;
     }
 
     public String getFirstName() {

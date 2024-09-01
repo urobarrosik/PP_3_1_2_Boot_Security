@@ -16,24 +16,15 @@ public class Role implements GrantedAuthority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "role_name")
+    @Column(name = "role_name", unique = true)
     private String name;
+
+    @Column(name = "link")
+    private String link;
 
     @Override
     public String getAuthority() {
-        return name;
-    }
-
-    public Role() {
-    }
-
-    public Role(long id) {
-        this.id = id;
-    }
-
-    public Role(long id, String name) {
-        this.id = id;
-        this.name = name;
+        return "ROLE_" + name;
     }
 
     public long getId() {
@@ -52,9 +43,17 @@ public class Role implements GrantedAuthority {
         this.name = name;
     }
 
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
     @Override
     public String toString() {
-        return "Role [id=" + id + ", name=" + name + "]";
+        return name;
     }
 
 }
