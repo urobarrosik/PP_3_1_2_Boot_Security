@@ -5,60 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <title>Твои данные</title>
-    <style>
-        .navbar {
-            background-color: #343a40;
-        }
-
-        .username {
-            color: white;
-            font-weight: bold;
-        }
-
-        .user-info {
-            color: #b0b3b8;
-        }
-
-        .container-fluid {
-            display: flex;
-            margin: 0;
-            width: 100%;
-        }
-
-        .sidebar {
-            flex: 1;
-            background-color: white;
-            padding: 15px;
-            height: calc(100vh - 6.6vh);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .content {
-            flex: 7;
-            background-color: #FFFAFA;
-            padding: 15px;
-        }
-
-        .logout-button {
-            background-color: transparent;
-            color: gray;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .logout-button:hover {
-            color: darkgray;
-        }
-
-        .role-button {
-            flex-basis: 2vh;
-            margin-bottom: 10px;
-            width: 100%;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="../static/admin_user_style.css">
+    <title>User page</title>
 </head>
 
 <body>
@@ -80,11 +28,15 @@
 <div class="container-fluid">
 
     <div class="sidebar">
+
         <div class="btn-group-vertical" role="group" aria-label="Basic example">
             <div th:each="role : ${user.roles}">
                 <button type="button" class="btn btn-primary role-button"
                         th:text="${role.name}"
                         th:data-link="${role.link}"
+                        th:class="${(role.name == 'ADMIN' and #httpServletRequest.servletPath.contains('/admin'))
+                        || (role.name == 'USER' and #httpServletRequest.servletPath.contains('/users'))
+                        ? 'btn btn-primary active role-button' : 'btn btn-link role-button'}"
                         onclick="location.href=this.dataset.link;"></button>
             </div>
         </div>

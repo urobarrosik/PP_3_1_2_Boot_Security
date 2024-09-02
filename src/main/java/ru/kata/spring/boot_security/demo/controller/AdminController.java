@@ -1,15 +1,18 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.repository.RoleRepository;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
@@ -34,6 +37,7 @@ public class AdminController {
         model.addAttribute("users", userService.listUsers());
         model.addAttribute("roles", roleService.findAllRoles());
         model.addAttribute("admin", userService.getUserByEmail(principal.getName()));
+        model.addAttribute("editsUser", new User()); // Добавьте сюда editsUser
         return "admin";
     }
 
@@ -50,18 +54,16 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    @PostMapping("/delete")
-    public String deleteUser(@RequestParam Long id) {
-        userService.delete(id);
-        return "redirect:/admin";
+    @GetMapping("/edit")
+    @ResponseBody
+    public User getUserForEdit(@RequestParam Long id) {
+        return userService.getUserById(id);
     }
 
-
-    @PostMapping("/edit")
-    public String editUser(@RequestParam Long id, Model model) {
-        model.addAttribute("editsUser", userService.getUserById(id));
-        model.addAttribute("roles", roleService.findAllRoles());
-        return "edit";
+    @PostMapping("/delete")
+    public String deleteUser(@ModelAttribute("deletedUser") @Valid User user) {
+        userService.delete(user.getId());
+        return "redirect:/admin";
     }
 
     @PostMapping("/update")
