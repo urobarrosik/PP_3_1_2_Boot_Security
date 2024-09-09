@@ -1,24 +1,56 @@
-$('.edit-button').click(function () {
-    const userId = $(this).data('userId');
+// Edit button click handler
+$('#editUserModal').on('show.bs.modal', function (event) {
+    let button = $(event.relatedTarget); // Получаем кнопку, которая открыла модальное окно
+    let userId = button.data('user-id'); // Получаем ID пользователя
 
     $.ajax({
-        url: '/edit?id=' + userId,
+        url: '/rest/rest_users/' + userId,
         type: 'GET',
         dataType: 'json',
         success: function (data) {
+            $('#userId').val(data.id);
+            $('#id').val(data.id);
+            $('#firstNameModal').val(data.firstName);
+            $('#lastNameModal').val(data.lastName);
+            $('#ageModal').val(data.age);
+            $('#usernameModal').val(data.username);
 
-            $('#editUserModal').find('input[name="id"]').val(data.id);
-            $('#editUserModal').find('input[name="firstName"]').val(data.firstName);
-            $('#editUserModal').find('input[name="lastName"]').val(data.lastName);
-            $('#editUserModal').find('input[name="age"]').val(data.age);
-            $('#editUserModal').find('input[name="username"]').val(data.username);
+            loadRoles();
+        }
+    });
+});
 
+$('#editUserForm').submit(function(event) {
+    event.preventDefault();
 
-            let rolesSelect = $('#editUserModal').find('select[name="rolesModal"]');
-            rolesSelect.empty();
-            $.each(data.roles, function (index, role) {
-                rolesSelect.append('<option value="' + role.id + '" selected>' + role.name + '</option>');
-            });
+    const data = {
+        id: $('#userId').val(),
+        firstName: $('#firstNameModal').val(),
+        lastName: $('#lastNameModal').val(),
+        age: parseInt($('#ageModal').val(), 10),
+        username: $('#usernameModal').val(),
+        password: $('#passwordModal').val(),
+        roles: $('#rolesModal').find(':selected').map(function() {
+            return {
+                id: parseInt($(this).val(), 10),
+                name: $(this).text()
+            };
+        }).get()
+    };
+
+    $.ajax({
+        url: '/rest/rest_users',
+        type: 'PUT',
+        dataType: 'json',
+        data: JSON.stringify(data),
+        contentType: 'application/json',
+        success: function() {
+            loadUsers();
+            $('#editUserModal').modal('hide');
+            alert('Пользователь успешно изменён!');
+        },
+        error: function() {
+            alert('Произошла ошибка при изменении данных. Попробуйте еще раз.');
         }
     });
 });
