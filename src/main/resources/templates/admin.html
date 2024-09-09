@@ -28,8 +28,14 @@
 <div class="container-fluid">
     <div class="sidebar">
         <div class="btn-group-vertical" role="group" aria-label="Basic example">
-            <div id="sidebar-roles">
-                <!-- Role buttons will be loaded here -->
+            <div th:each="role : ${admin.roles}">
+                <button type="button" class="btn btn-primary role-button"
+                        th:text="${role.name}"
+                        th:data-link="${role.link}"
+                        th:class="${(role.name == 'ADMIN' and #httpServletRequest.servletPath.contains('/admin'))
+                        || (role.name == 'USER' and #httpServletRequest.servletPath.contains('/userinfo'))
+                        ? 'btn btn-primary active role-button' : 'btn btn-link role-button'}"
+                        onclick="location.href=this.dataset.link;"></button>
             </div>
         </div>
     </div>
