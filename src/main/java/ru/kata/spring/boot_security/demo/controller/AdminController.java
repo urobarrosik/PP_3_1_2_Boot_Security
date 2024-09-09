@@ -70,7 +70,7 @@ public class AdminController {
     public String updateUser(@ModelAttribute("editsUser") @Valid User user, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("editsUser", user);
-            return "edit";
+            return "admin";
         }
         userService.update(user);
         return "redirect:/admin";

@@ -352,59 +352,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-<script>
-    $('.edit-button').click(function () {
-        let userId = $(this).data('userId');
-
-        $.ajax({
-            url: '/edit?id=' + userId,
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-
-                $('#editUserModal').find('input[name="id"]').val(data.id);
-                $('#editUserModal').find('input[name="firstName"]').val(data.firstName);
-                $('#editUserModal').find('input[name="lastName"]').val(data.lastName);
-                $('#editUserModal').find('input[name="age"]').val(data.age);
-                $('#editUserModal').find('input[name="username"]').val(data.username);
-
-
-                let rolesSelect = $('#editUserModal').find('select[name="rolesModal"]');
-                rolesSelect.empty();
-                $.each(data.roles, function (index, role) {
-                    rolesSelect.append('<option value="' + role.id + '" selected>' + role.name + '</option>');
-                });
-            }
-        });
-    });
-</script>
-<script>
-    $('.btn-danger').click(function () {
-        let userId = $(this).data('user-id');
-
-        $.ajax({
-            url: '/edit?id=' + userId,
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-
-                $('#deleteUserModal').find('input[name="id"]').val(data.id);
-                $('#deleteUserModal').find('input[name="firstName"]').val(data.firstName);
-                $('#deleteUserModal').find('input[name="lastName"]').val(data.lastName);
-                $('#deleteUserModal').find('input[name="age"]').val(data.age);
-                $('#deleteUserModal').find('input[name="username"]').val(data.username);
-
-
-                let rolesSelect = $('#deleteUserModal').find('select[name="roles"]');
-                rolesSelect.empty();
-                $.each(data.roles, function (index, role) {
-                    rolesSelect.append('<option value="' + role.id + '" selected>' + role.name + '</option>');
-                });
-            }
-        });
-    });
-
-</script>
+<script src="../static/editModal.js"></script>
+<script src="../static/deleteModal.js"></script>
 
 
 </body>
