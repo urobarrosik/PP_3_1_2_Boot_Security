@@ -20,7 +20,7 @@ $('#editUserModal').on('show.bs.modal', function (event) {
     });
 });
 
-$('#editUserForm').submit(function(event) {
+$('#editUserForm').submit(function (event) {
     event.preventDefault();
 
     const data = {
@@ -30,7 +30,7 @@ $('#editUserForm').submit(function(event) {
         age: parseInt($('#ageModal').val(), 10),
         username: $('#usernameModal').val(),
         password: $('#passwordModal').val(),
-        roles: $('#rolesModal').find(':selected').map(function() {
+        roles: $('#rolesModal').find(':selected').map(function () {
             return {
                 id: parseInt($(this).val(), 10),
                 name: $(this).text()
@@ -44,12 +44,12 @@ $('#editUserForm').submit(function(event) {
         dataType: 'json',
         data: JSON.stringify(data),
         contentType: 'application/json',
-        success: function() {
+        success: function () {
             loadUsers();
             $('#editUserModal').modal('hide');
             alert('Пользователь успешно изменён!');
         },
-        error: function() {
+        error: function () {
             alert('Произошла ошибка при изменении данных. Попробуйте еще раз.');
         }
     });

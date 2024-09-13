@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
     loadCurrentUser();
     loadRoles();
     loadUsers();
@@ -48,7 +48,7 @@ function loadCurrentUser() {
         url: '/rest/user/current',
         type: 'GET',
         dataType: 'json',
-        success: function(data) {
+        success: function (data) {
             $('#admin-username').text(data.username);
             let roles = data.roles.map(role => role.name).join(', ');
             $('#admin-roles').text(roles);
@@ -61,7 +61,7 @@ function loadRoles() {
         url: '/rest/roles',
         type: 'GET',
         dataType: 'json',
-        success: function(data) {
+        success: function (data) {
             renderRoleButtons(data);
             renderRolesSelect(data);
         }
@@ -73,7 +73,7 @@ function loadUsers() {
         url: '/rest/rest_users',
         type: 'GET',
         dataType: 'json',
-        success: function(data) {
+        success: function (data) {
             renderUsers(data);
         }
     });
